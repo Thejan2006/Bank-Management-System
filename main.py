@@ -153,6 +153,11 @@ def user_dashboard(user_id):
                 amount = float(input("Enter amount to transfer: Rs. "))
                 if amount > 0:
                     transfer_money(user_id, receiver_account_number, amount)
+                    confirmation = input("Please confirm your password to proceed with the transfer: ")
+                    if verify_password(user_id, confirmation):
+                        transfer_money(user_id, receiver_account_number, amount)
+                    else:
+                        print("Incorrect password! Transfer cancelled.")                   
                 else:
                     print("Transfer amount must be greater than 0.")
             except ValueError:
