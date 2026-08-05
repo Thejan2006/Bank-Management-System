@@ -1,3 +1,4 @@
+import hashlib
 import sqlite3
 import os
 from dotenv import load_dotenv
@@ -7,7 +8,13 @@ load_dotenv()
 
 DB_NAME = os.getenv('DB_NAME', 'bank_management.db')
 
+
+
+def hash_password(password):
+    return hashlib.sha256(password.encode()).hexdigest()
+
 def create_user(name, pin, email):
+    pin = hash_password(pin)
     try:
         conn = sqlite3.connect(DB_NAME)
         cursor = conn.cursor()
@@ -63,9 +70,10 @@ def create_tables():
     # print("Database and all tables created successfully.")  
 
 def login_user(username, password):
+    hashed_password = hash_password(password)
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT id, username FROM users WHERE username = ? AND password = ?", (username, password))
+    cursor.execute("SELECT id, username FROM users WHERE username = ? AND password = ?", (username, hashed_password))
     user = cursor.fetchone()
     conn.close()
     
@@ -176,6 +184,91 @@ def get_transactions_history(user_id):
         return None 
     finally:
         conn.close()
+        
+        
+        
+        
+def  transfer_money(user_id,receiver_account_number, amount):        
+    # Check if sender has sufficient balance
+    sender_account = get_balance(user_id)
+    if not sender_account:
+        print("You don't have an account yet. Please create one first.")
+        return False
+   
+    
+    sender_account_number, sender_balance = sender_account
+    
+    if sender_account_number == receiver_account_number:
+            print("You cannot transfer money to your own account.")
+            return False
+    
+    #chnge: Check if sender has sufficient balance
+    if amount > sender_balance:
+        print("Insufficient balance! Your current balance is Rs.", sender_balance)
+        return False
+
+    # start database transaction to ensure atomicity
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    
+    
+    try:
+        cursor.execute("SELECT account_number, balance FROM accounts WHERE account_number = ?", (receiver_account_number,))
+        receiver_account = cursor.fetchone()
+        if not receiver_account:
+            print("Receiver account number does not exist.")
+            return False
+        receiver_balance = receiver_account[1]
+        
+        new_sender_balance = sender_balance - amount
+        new_receiver_balance = receiver_balance + amount
+        cursor.execute("UPDATE accounts SET balance = ? WHERE account_number = ?", (new_sender_balance, sender_account_number))
+        cursor.execute("UPDATE accounts SET balance = ? WHERE account_number = ?", (new_receiver_balance, receiver_account_number))
+        cursor.execute("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (?, 'Transfer Out', ?)", (sender_account_number, amount))
+        cursor.execute("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (?, 'Transfer In', ?)", (receiver_account_number, amount))
+        conn.commit()
+        print(f"Successfully transferred Rs. {amount} from {sender_account_number} to {receiver_account_number}.")    
+    except sqlite3.Error as e:
+        conn.rollback()
+        print(f"Error checking receiver account: {e}")
+    finally:
+        conn.close()
+
+    receiver_account_number, receiver_balance = receiver_account
+    new_sender_balance = sender_balance - amount
+    new_receiver_balance = receiver_balance + amount
+
+    # Perform the transfer
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    try:
+        cursor.execute("UPDATE accounts SET balance = ? WHERE account_number = ?", (new_sender_balance, sender_account_number))
+        cursor.execute("UPDATE accounts SET balance = ? WHERE account_number = ?", (new_receiver_balance, receiver_account_number))
+        cursor.execute("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (?, 'Transfer Out', ?)", (sender_account_number, amount))
+        cursor.execute("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (?, 'Transfer In', ?)", (receiver_account_number, amount))
+        conn.commit()
+        print(f"Successfully transferred Rs. {amount} from {sender_account_number} to {receiver_account_number}.")
+    except sqlite3.Error as e:
+        print(f"Error during transfer: {e}")
+    finally:
+        conn.close()
+        
+def verify_password(user_id, password):
+    hashed_password = hash_password(password)
+    conn = sqlite3.connect(DB_NAME)
+    cursor = conn.cursor()
+    cursor.execute("SELECT id FROM users WHERE id = ? AND password = ?", (user_id, hashed_password))
+    user = cursor.fetchone()
+    conn.close()
+    
+    # Return True if the password is correct, otherwise False
+    if user:
+        return True
+    else:
+        return False
+           
+        
+        
 
 if __name__ == "__main__":
     create_tables()
