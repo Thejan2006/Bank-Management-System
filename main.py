@@ -1,5 +1,7 @@
 import re
-from database import create_tables, create_user, login_user, create_account, get_balance, deposit_money, withdraw_money, get_transactions_history, transfer_money, verify_password
+from database import create_tables
+from user_management import create_user, login_user, verify_password, update_user_profile
+from bank_operations import create_account, get_balance, deposit_money, withdraw_money, get_transactions_history, transfer_money
 
 def is_valid_email(email):
     # Simple regex for email validation
@@ -88,9 +90,10 @@ def user_dashboard(user_id):
         print("4. Withdraw Money")
         print("5. View Transaction History")
         print("6. Transfer Money")
-        print("7. Logout")
+        print("7. Update Profile")
+        print("8. Logout")
         
-        choice = input("Enter your choice (1-7): ")
+        choice = input("Enter your choice (1-8): ")
         
         if choice == '1':
             try:
@@ -162,7 +165,20 @@ def user_dashboard(user_id):
                     print("Transfer amount must be greater than 0.")
             except ValueError:
                 print("Invalid amount!")
+                
+                
         elif choice == '7':
+            print("\n--- Update Profile ---")
+            new_username = input("Enter new username (leave blank to keep current): ")
+            new_email = input("Enter new email (leave blank to keep current): ")
+            
+            if new_email and not is_valid_email(new_email):
+                print("Invalid email format.")
+                continue
+            
+            update_user_profile(user_id, new_username if new_username else None, new_email if new_email else None)       
+                
+        elif choice == '8':
             print("Logging out...")
             break      
         else:
