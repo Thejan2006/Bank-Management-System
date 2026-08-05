@@ -1,4 +1,10 @@
-from database import create_tables, create_user, login_user, create_account, get_balance, deposit_money, withdraw_money, get_transactions_history
+import re
+from database import create_tables, create_user, login_user, create_account, get_balance, deposit_money, withdraw_money, get_transactions_history, transfer_money, verify_password
+
+def is_valid_email(email):
+    # Simple regex for email validation
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    return re.match(pattern, email) is not None
 
 def user_dashboard(user_id):
     while True:
@@ -41,7 +47,17 @@ def main():
             username = input("Enter Username: ")
             password = input("Enter Password: ")
             email = input("Enter Email: ")
-            create_user(username, password, email)
+            
+            if len(password) < 4 :
+                print("Password must be at least 4 characters long.") # check password length
+                continue
+            
+            elif not is_valid_email(email):
+                print("Invalid email format.") #check email format
+                continue
+            else:
+               create_user(username, password, email) # all checks passed, create user
+            
 
         elif choice == '2':
             print("\n--- User Login ---")
@@ -71,9 +87,10 @@ def user_dashboard(user_id):
         print("3. Deposit Money")
         print("4. Withdraw Money")
         print("5. View Transaction History")
-        print("6. Logout")
+        print("6. Transfer Money")
+        print("7. Logout")
         
-        choice = input("Enter your choice (1-6): ")
+        choice = input("Enter your choice (1-7): ")
         
         if choice == '1':
             try:
@@ -108,6 +125,11 @@ def user_dashboard(user_id):
                 amount = float(input("Enter amount to withdraw: Rs. "))
                 if amount > 0:
                     withdraw_money(user_id, amount)
+                    confirmation = input("Please confirm your password to proceed with the withdrawal: ")
+                    if verify_password(user_id, confirmation):
+                        withdraw_money(user_id, amount)
+                    else:
+                        print("Incorrect password! Withdrawal cancelled.")                   
                 else:
                     print("Withdrawal amount must be greater than 0.")
             except ValueError:
@@ -124,13 +146,22 @@ def user_dashboard(user_id):
             for t in history:
                     print(f"Timestamp: {t[0]}, Type: {t[1]}, Amount: Rs. {t[2]}")
                     
-                    
-                    
+                              
         elif choice == '6':
+            try:
+                receiver_account_number = input("Enter receiver's account number: ")
+                amount = float(input("Enter amount to transfer: Rs. "))
+                if amount > 0:
+                    transfer_money(user_id, receiver_account_number, amount)
+                else:
+                    print("Transfer amount must be greater than 0.")
+            except ValueError:
+                print("Invalid amount!")
+        elif choice == '7':
             print("Logging out...")
             break      
         else:
             print("Invalid choice!")            
-
+            
 if __name__ == "__main__":
     main()
