@@ -51,7 +51,7 @@ def deposit_money(user_id, amount):
         
         conn.commit()
         print(f"Successfully deposited Rs. {amount}. New Balance is: Rs. {new_balance}")
-        
+        return True
     except sqlite3.Error as e:
         print(f"Error during deposit: {e}")
     finally:
@@ -73,6 +73,7 @@ def withdraw_money(user_id, amount):
             cursor.execute("INSERT INTO transactions (account_number, transaction_type, amount) VALUES (?, 'Withdraw', ?)", (account_number, amount))
             conn.commit()
             print(f"Successfully withdrew Rs. {amount}. New Balance is: Rs. {new_balance}")
+            return True
         except sqlite3.Error as e:
             print(f"Error during withdrawal: {e}")
         finally:
