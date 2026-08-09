@@ -21,7 +21,6 @@ export default function TransactionsPage() {
 
   const handleTransaction = async (e) => {
     e.preventDefault();
-
     const formattedUserId = parseInt(userId);
     const numericAmount = parseFloat(amount);
     const token = localStorage.getItem('access_token');
@@ -30,14 +29,12 @@ export default function TransactionsPage() {
       toast.error('User ID cannot find, please login first.');
       return;
     }
-
     if (isNaN(numericAmount) || numericAmount <= 0) {
       toast.error('Please enter a valid amount greater than 0.');
       return;
     }
 
     const endpoint = type === 'deposit' ? 'http://localhost:8000/deposit' : 'http://localhost:8000/withdraw';
-
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -74,7 +71,6 @@ export default function TransactionsPage() {
       } else {
         toast.success(data.message || 'Transaction successful');
         setAmount('');
-
         setTimeout(() => {
           router.push('/dashboard'); 
         }, 1500);
@@ -86,81 +82,77 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans">
       <Toaster position="top-right" />
 
-      <div className="bg-white w-full max-w-[420px] rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-        
-        {/* Top Header */}
-        <div className="flex justify-between items-center border-b border-gray-100 pb-5 mb-6">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-200 to-emerald-400 flex items-center justify-center text-white font-bold">
-            💸
-          </div>
-          <div className="text-right">
-            <div className="text-sm font-semibold text-gray-800">
-              ID: {userId || 'Loading...'}
-            </div>
-            <div className="text-xs text-gray-400 font-medium mt-1">ArcanaBank Secure</div>
-          </div>
+      {/* Left Branding Side */}
+      <div className="md:w-1/3 bg-zinc-950 text-white p-10 flex flex-col justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">ArcanaBank.</h1>
+          <p className="text-zinc-400 text-sm">Manage your deposits and withdrawals.</p>
         </div>
-
-        {/* Title Section */}
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Bank Transactions</h2>
-          <p className="text-sm text-gray-500">Deposit or withdraw funds securely</p>
+        <div className="hidden md:block">
+          <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Account ID</div>
+          <div className="text-lg font-semibold">{userId || 'Loading...'}</div>
         </div>
+      </div>
 
-        {/* Form */}
-        <form onSubmit={handleTransaction}>
+      {/* Right Form Side */}
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-zinc-50">
+        <div className="w-full max-w-lg bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 p-8 md:p-10">
           
-          <div className="bg-[#f8f9fa] rounded-2xl p-5 mb-6 border border-gray-100 space-y-5">
-            
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Transaction Type</label>
-              <select 
-                value={type} 
-                onChange={(e) => setType(e.target.value)}
-                className="w-full bg-transparent border-none p-0 text-gray-900 font-bold text-base focus:ring-0 cursor-pointer"
-              >
-                <option value="deposit">Deposit Money</option>
-                <option value="withdraw">Withdraw Money</option>
-              </select>
-              <div className="h-[1px] w-full bg-gray-200 mt-2"></div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Amount (Rs.)</label>
-              <input 
-                type="number" 
-                step="0.01"
-                value={amount} 
-                onChange={(e) => setAmount(e.target.value)} 
-                required
-                placeholder="0.00"
-                className="w-full bg-transparent border-none p-0 text-gray-900 font-bold text-lg focus:ring-0 placeholder-gray-300"
-              />
-              <div className="h-[1px] w-full bg-gray-200 mt-2"></div>
-            </div>
-
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-zinc-900 mb-2">Transactions</h2>
+            <p className="text-sm text-zinc-500">Deposit or withdraw funds securely.</p>
           </div>
 
-          <button 
-            type="submit" 
-            className={`w-full text-white font-semibold py-3.5 rounded-2xl transition shadow-md flex justify-center items-center gap-2 ${
-              type === 'deposit' ? 'bg-[#10b981] hover:bg-[#059669]' : 'bg-[#ef4444] hover:bg-[#dc2626]'
-            }`}
-          >
-            {type === 'deposit' ? 'Proceed Deposit' : 'Proceed Withdrawal'}
-          </button>
+          <form onSubmit={handleTransaction} className="space-y-6">
+            
+            <div className="space-y-5">
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Transaction Type</label>
+                <select 
+                  value={type} 
+                  onChange={(e) => setType(e.target.value)}
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all cursor-pointer appearance-none"
+                >
+                  <option value="deposit">Deposit Money</option>
+                  <option value="withdraw">Withdraw Money</option>
+                </select>
+              </div>
 
-          <button 
-            type="button" 
-            onClick={() => router.push('/dashboard')}
-            className="w-full mt-3 bg-white border border-gray-200 text-gray-800 font-semibold py-3.5 rounded-2xl transition hover:bg-gray-50 flex justify-center items-center"
-          >
-            Back to dashboard
-          </button>
-        </form>
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Amount (Rs.)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  value={amount} 
+                  onChange={(e) => setAmount(e.target.value)} 
+                  required
+                  placeholder="0.00"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all placeholder-zinc-300"
+                />
+              </div>
+            </div>
+
+            <div className="pt-2 space-y-3">
+              <button 
+                type="submit" 
+                className="w-full bg-zinc-900 hover:bg-black text-white font-bold text-xs tracking-widest uppercase py-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
+              >
+                Proceed {type === 'deposit' ? 'Deposit' : 'Withdrawal'}
+              </button>
+
+              <button 
+                type="button" 
+                onClick={() => router.push('/dashboard')}
+                className="w-full bg-white border border-zinc-200 text-zinc-700 font-bold text-xs tracking-widest uppercase py-4 rounded-xl transition hover:bg-zinc-50 flex justify-center items-center"
+              >
+                Back to Dashboard
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
