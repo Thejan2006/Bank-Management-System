@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import toast, { Toaster } from 'react-hot-toast'; // 🔴 Toaster import කළා
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function TransferPage() {
   const [senderId, setSenderId] = useState('');
@@ -11,20 +11,16 @@ export default function TransferPage() {
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('user_id');
-
-    // Only check for user_id to match Navbar behavior
     if (!storedUserId) {
       toast.error('Session expired. Please login again.');
       router.push('/login');
       return;
     }
-
     setSenderId(storedUserId);
   }, [router]);
 
   const handleTransfer = async (e) => {
     e.preventDefault();
-
     const formattedSenderId = parseInt(senderId);
     const numericAmount = parseFloat(amount);
     const token = localStorage.getItem('access_token');
@@ -33,13 +29,11 @@ export default function TransferPage() {
       toast.error('Please enter the receiver account number.');
       return;
     }
-
     if (isNaN(numericAmount) || numericAmount <= 0) {
       toast.error('Please enter a valid amount greater than 0.');
       return;
     }
 
-    // Set headers dynamically (include Authorization header if token exists)
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;
@@ -78,7 +72,6 @@ export default function TransferPage() {
         toast.success(data.message || 'Transfer completed successfully!');
         setAmount('');
         setReceiverAccountNumber('');
-
         setTimeout(() => {
           router.push('/dashboard');
         }, 1500);
@@ -90,90 +83,82 @@ export default function TransferPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f3f4f6] flex items-center justify-center p-4 font-sans">
-      {/* 🔴 Toaster component show massage */}
+    <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans">
       <Toaster position="top-right" />
 
-      {/* Main Card */}
-      <div className="bg-white w-full max-w-[420px] rounded-3xl shadow-sm border border-gray-100 p-6 md:p-8">
-        
-        {/* Top Header */}
-        <div className="flex justify-between items-center border-b border-gray-100 pb-5 mb-6">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-teal-200 to-blue-500 flex items-center justify-center text-white font-bold">💸</div>
-          <div className="text-right">
-            <div className="text-sm font-semibold text-gray-800 flex items-center justify-end gap-2">
-              <span>💳 ID: {senderId || 'Loading...'}</span>
-            </div>
-            <div className="text-xs text-gray-400 font-medium mt-1">ArcanaBank Secure</div>
-          </div>
+      {/* Left Branding Side */}
+      <div className="md:w-1/3 bg-zinc-950 text-white p-10 flex flex-col justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">ArcanaBank.</h1>
+          <p className="text-zinc-400 text-sm">Secure and fast fund transfers.</p>
         </div>
-
-        {/* Title Section */}
-        <div className="mb-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">Bank transfer</h2>
-          <p className="text-sm text-gray-500">Make transfer to the account details below</p>
+        <div className="hidden md:block">
+          <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Current Session</div>
+          <div className="text-lg font-semibold">User ID: {senderId || 'Loading...'}</div>
         </div>
+      </div>
 
-        {/* Form */}
-        <form onSubmit={handleTransfer}>
+      {/* Right Form Side */}
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-zinc-50">
+        <div className="w-full max-w-lg bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 p-8 md:p-10">
           
-          {/* Inner Grey Box for Inputs (Matching the image style) */}
-          <div className="bg-[#f8f9fa] rounded-2xl p-5 mb-6 border border-gray-100 space-y-5">
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-zinc-900 mb-2">Send Money</h2>
+            <p className="text-sm text-zinc-500">Transfer funds instantly to any account.</p>
+          </div>
+
+          <form onSubmit={handleTransfer} className="space-y-6">
             
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Receiver Account Number</label>
-              <input 
-                type="text" 
-                value={receiverAccountNumber} 
-                onChange={(e) => setReceiverAccountNumber(e.target.value)} 
-                required
-                placeholder="e.g. ACC123456"
-                className="w-full bg-transparent border-none p-0 text-gray-900 font-bold text-lg focus:ring-0 placeholder-gray-300"
-              />
-              <div className="h-[1px] w-full bg-gray-200 mt-2"></div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Receiver Account Number</label>
+                <input 
+                  type="text" 
+                  value={receiverAccountNumber} 
+                  onChange={(e) => setReceiverAccountNumber(e.target.value)} 
+                  required
+                  placeholder="e.g. ACC123456"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all placeholder-zinc-300"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Amount (Rs.)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  value={amount} 
+                  onChange={(e) => setAmount(e.target.value)} 
+                  required
+                  placeholder="0.00"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all placeholder-zinc-300"
+                />
+              </div>
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">Amount (Rs.)</label>
-              <input 
-                type="number" 
-                step="0.01"
-                value={amount} 
-                onChange={(e) => setAmount(e.target.value)} 
-                required
-                placeholder="0.00"
-                className="w-full bg-transparent border-none p-0 text-gray-900 font-bold text-lg focus:ring-0 placeholder-gray-300"
-              />
-              <div className="h-[1px] w-full bg-gray-200 mt-2"></div>
+            <div className="flex items-center gap-2 text-xs font-medium text-zinc-500 bg-zinc-50 p-4 rounded-xl border border-zinc-100">
+              <span className="text-lg">🔒</span>
+              Only confirm if the receiver details are correct.
             </div>
 
-          </div>
+            <div className="pt-2 space-y-3">
+              <button 
+                type="submit" 
+                className="w-full bg-zinc-900 hover:bg-black text-white font-bold text-xs tracking-widest uppercase py-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2"
+              >
+                Confirm Payment {amount ? `(Rs. ${amount})` : ''}
+              </button>
 
-          {/* Info Text */}
-          <div className="flex justify-center items-center gap-2 mb-4 text-sm font-medium text-indigo-700">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
-            </svg>
-            Only confirm if details are correct
-          </div>
-
-          {/* Primary Button */}
-          <button 
-            type="submit" 
-            className="w-full bg-[#5642ea] hover:bg-[#4632c9] text-white font-semibold py-3.5 rounded-2xl transition shadow-md flex justify-center items-center gap-2"
-          >
-            Confirm payment {amount ? `(Rs. ${amount})` : ''}
-          </button>
-
-          {/* Secondary Button */}
-          <button 
-            type="button" 
-            onClick={() => router.push('/dashboard')}
-            className="w-full mt-3 bg-white border border-gray-200 text-gray-800 font-semibold py-3.5 rounded-2xl transition hover:bg-gray-50 flex justify-center items-center"
-          >
-            Back to dashboard
-          </button>
-        </form>
+              <button 
+                type="button" 
+                onClick={() => router.push('/dashboard')}
+                className="w-full bg-white border border-zinc-200 text-zinc-700 font-bold text-xs tracking-widest uppercase py-4 rounded-xl transition hover:bg-zinc-50 flex justify-center items-center"
+              >
+                Cancel & Return
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
