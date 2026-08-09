@@ -126,7 +126,7 @@ export default function HistoryPage() {
             {transactions.length > 0 && (
               <button 
                 onClick={handleDownloadPDF} 
-                className="bg-sky-600 hover:bg-sky-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm shadow-sm flex items-center gap-2"
+                className="bg-black hover:bg-gray-700 text-white font-semibold px-5 py-2.5 rounded-xl transition text-sm shadow-sm flex items-center gap-2"
               >
                 📥 Download PDF
               </button>
