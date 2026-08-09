@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import toast from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function CreateAccountPage() {
   const [userId, setUserId] = useState('');
@@ -31,7 +31,6 @@ export default function CreateAccountPage() {
         const errorText = typeof data.error === 'object' 
           ? (data.error.message || JSON.stringify(data.error)) 
           : data.error;
-        
         toast.error(errorText);
       } else if (data.message) {
         const successText = typeof data.message === 'object'
@@ -51,72 +50,82 @@ export default function CreateAccountPage() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-80px)] flex items-center justify-center bg-[#f8fafc] px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-sm border border-gray-100 p-8">
-        
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-teal-50 text-teal-500 mb-4 text-2xl shadow-sm">
-            🏦
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Create Bank Account</h2>
-          <p className="text-sm text-gray-400 mt-1">Enter your details to open a new account</p>
+    <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans">
+      <Toaster position="top-right" />
+
+      {/* Left Branding Side */}
+      <div className="md:w-1/3 bg-zinc-950 text-white p-10 flex flex-col justify-between">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight mb-2">ArcanaBank.</h1>
+          <p className="text-zinc-400 text-sm">Welcome to the future of finance.</p>
         </div>
-        
-        {/* Form Section */}
-        <form onSubmit={handleCreateAccount} className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-2">User ID</label>
-            <input 
-              type="number" 
-              value={userId} 
-              onChange={(e) => setUserId(e.target.value)} 
-              required
-              placeholder="Enter User ID"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition"
-            />
+        <div className="hidden md:block">
+          <div className="text-xs text-zinc-500 uppercase tracking-widest mb-1">Status</div>
+          <div className="text-lg font-semibold text-zinc-300">Registration Portal</div>
+        </div>
+      </div>
+
+      {/* Right Form Side */}
+      <div className="flex-1 flex items-center justify-center p-6 md:p-12 bg-zinc-50">
+        <div className="w-full max-w-lg bg-white rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-zinc-100 p-8 md:p-10">
+          
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-zinc-900 mb-2">Create Account</h2>
+            <p className="text-sm text-zinc-500">Enter your details to open a new bank account.</p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-600 mb-2">Initial Deposit (Rs.)</label>
-            <input 
-              type="number" 
-              step="0.01"
-              value={initialDeposit} 
-              onChange={(e) => setInitialDeposit(e.target.value)} 
-              required
-              placeholder="0.00"
-              className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:bg-white transition"
-            />
-          </div>
+          <form onSubmit={handleCreateAccount} className="space-y-6">
+            
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">User ID</label>
+                <input 
+                  type="number" 
+                  value={userId} 
+                  onChange={(e) => setUserId(e.target.value)} 
+                  required
+                  placeholder="Enter your ID"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all placeholder-zinc-300"
+                />
+              </div>
 
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full bg-teal-500 hover:bg-teal-600 text-white font-semibold py-3.5 rounded-xl shadow-md transition duration-200 flex items-center justify-center disabled:opacity-50"
-          >
-            {loading ? (
-              <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              'Create Account'
-            )}
-          </button>
-        </form>
+              <div>
+                <label className="block text-xs font-bold text-zinc-400 uppercase tracking-wider mb-2">Initial Deposit (Rs.)</label>
+                <input 
+                  type="number" 
+                  step="0.01"
+                  value={initialDeposit} 
+                  onChange={(e) => setInitialDeposit(e.target.value)} 
+                  required
+                  placeholder="0.00"
+                  className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-5 py-4 text-zinc-900 font-semibold focus:outline-none focus:ring-1 focus:ring-zinc-900 focus:border-zinc-900 transition-all placeholder-zinc-300"
+                />
+              </div>
+            </div>
 
-        {/* Message Display */}
-        {message && (
-          <p className={`mt-6 text-center text-sm font-semibold ${message.includes('successfully') ? 'text-green-600' : 'text-red-500'}`}>
-            {typeof message === 'object' ? JSON.stringify(message) : message}
-          </p>
-        )}
+            <div className="pt-2">
+              <button 
+                type="submit" 
+                disabled={loading}
+                className="w-full bg-zinc-900 hover:bg-black text-white font-bold text-xs tracking-widest uppercase py-4 rounded-xl transition-all shadow-lg flex justify-center items-center gap-2 disabled:opacity-50"
+              >
+                {loading ? (
+                  <div className="w-5 h-5 border-2 border-zinc-500 border-t-white rounded-full animate-spin"></div>
+                ) : (
+                  'Open Account'
+                )}
+              </button>
+            </div>
+          </form>
 
-        {/* Generated Account Number Card */}
-        {accountNumber && (
-          <div className="mt-6 p-4 bg-teal-50/50 border border-teal-100 rounded-2xl text-center animate-fade-in">
-            <p className="text-xs font-semibold uppercase tracking-wider text-teal-600 mb-1">Account Number Generated</p>
-            <p className="text-xl font-mono font-bold text-gray-900 tracking-wider">{accountNumber}</p>
-          </div>
-        )}
+          {/* Generated Account Number Display */}
+          {accountNumber && (
+            <div className="mt-8 p-6 bg-zinc-50 border border-zinc-200 rounded-2xl text-center animate-fade-in">
+              <p className="text-xs font-bold uppercase tracking-widest text-zinc-500 mb-2">Account Successfully Created</p>
+              <p className="text-2xl font-mono font-black text-zinc-900 tracking-wider">{accountNumber}</p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
