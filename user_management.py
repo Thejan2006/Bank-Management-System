@@ -110,19 +110,19 @@ def update_user_profile(user_id, new_username, new_eamil):
     finally:
         conn.close()
 
-# 🔴 අලුතින් එකතු කළ යුතු Function එක (Dashboard එකෙන් Balance එක ගැනීමට මෙය අත්‍යවශ්‍යයි)
+# 🔴 new fuction we create to get user infromation
 def get_user_info(user_id: int):
     conn = sqlite3.connect(DB_NAME)
     cursor = conn.cursor()
     try:
-        # users table එකෙන් නම සහ email ලබා ගැනීම
+        # users table get emali and name 
         cursor.execute("SELECT id, username, email FROM users WHERE id = ?", (user_id,))
         user = cursor.fetchone()
         
         if not user:
             return None
             
-        # accounts table එකෙන් අදාළ user ගේ balance එක ලබා ගැනීම
+        # accounts table  get user name and id
         cursor.execute("SELECT balance FROM accounts WHERE user_id = ?", (user_id,))
         account = cursor.fetchone()
         
@@ -139,3 +139,4 @@ def get_user_info(user_id: int):
         return None
     finally:
         conn.close()
+        
