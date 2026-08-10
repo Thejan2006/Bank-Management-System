@@ -69,7 +69,7 @@ export default function TransferPage() {
       if (data.error) {
         toast.error(typeof data.error === 'object' ? JSON.stringify(data.error) : data.error);
       } else {
-        toast.success(data.message || 'Transfer completed successfully!');
+        toast.success(data.message || 'Transfer completed successfully! Email alert sent!');
         setAmount('');
         setReceiverAccountNumber('');
         setTimeout(() => {
