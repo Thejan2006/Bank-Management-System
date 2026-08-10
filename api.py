@@ -1,15 +1,17 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, BackgroundTasks
 from pydantic import BaseModel
 from bank_operations import get_balance, deposit_money, withdraw_money, transfer_money, get_transactions_history
 from fastapi.middleware.cors import CORSMiddleware
 
-# user_management එකෙන් අවශ්‍ය functions ගෙන්වා ගැනීම
+# User management සහ Notifications ශ්‍රිත ලබාගැනීම
 from user_management import get_user_info, create_user, login_user, create_account, update_user_profile
+from notifications import send_transaction_email
 
-app = FastAPI() #start api
+app = FastAPI()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # give access to all origins
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,7 +25,7 @@ def read_root():
 def check_status():
     return {"status": "API is running smoothly."}
 
-# 🔴 අලුතින් එකතු කළ Route එක (Dashboard එකෙන් call කරන එක)
+# --- DASHBOARD & USER ENDPOINTS ---
 @app.get("/user/{user_id}")
 def get_user_endpoint(user_id: int):
     user_data = get_user_info(user_id)
@@ -38,45 +40,76 @@ def check_balance(user_id: int):
     if account:
         return {"account_number": account[0], "balance": account[1]}
     else:
-     return {"error": "User not found"}
+        return {"error": "User not found"}
 
+# --- DEPOSIT WITH EMAIL ---
 class DepositRequest(BaseModel):
     user_id: int
     amount: float
     
 @app.post("/deposit")
-def deposit_funds(request: DepositRequest):
+def deposit_funds(request: DepositRequest, background_tasks: BackgroundTasks):
     success = deposit_money(request.user_id, request.amount)
     if success:
-        return {"message": f"Successfully deposited Rs. {request.amount}. to {request.user_id}'s account."}
+        user_info = get_user_info(request.user_id)
+        if user_info and user_info.get("email"):
+            background_tasks.add_task(
+                send_transaction_email,
+                user_info["email"],
+                request.amount,
+                user_info["balance"],
+                "deposit"
+            )
+        return {"message": f"Successfully deposited Rs. {request.amount} to user ID {request.user_id}'s account."}
     else:
         return {"error": "Deposit failed. Please check your account and try again."}
 
+# --- WITHDRAW WITH EMAIL ---
 class WithdrawRequest(BaseModel):
     user_id: int
     amount: float
 
 @app.post("/withdraw")
-def withdraw_funds(request: WithdrawRequest):
+def withdraw_funds(request: WithdrawRequest, background_tasks: BackgroundTasks):
     success = withdraw_money(request.user_id, request.amount)
     if success:
-        return {"message": f"Successfully withdrew Rs. {request.amount} from {request.user_id}'s account."}
+        user_info = get_user_info(request.user_id)
+        if user_info and user_info.get("email"):
+            background_tasks.add_task(
+                send_transaction_email,
+                user_info["email"],
+                request.amount,
+                user_info["balance"],
+                "withdraw"
+            )
+        return {"message": f"Successfully withdrew Rs. {request.amount} from user ID {request.user_id}'s account."}
     else:
         return {"error": "Withdrawal failed. Please check your account balance and try again."}
-    
+
+# --- TRANSFER WITH EMAIL ---    
 class TransferRequest(BaseModel):
     sender_id: int
     receiver_account_number: str
     amount: float
     
 @app.post("/transfer")
-def transfer_funds(request: TransferRequest):
+def transfer_funds(request: TransferRequest, background_tasks: BackgroundTasks):
     success = transfer_money(request.sender_id, request.receiver_account_number, request.amount)
     if success:
-        return {"message": f"Successfully transferred Rs. {request.amount} from {request.sender_id}'s account to {request.receiver_account_number}."}
+        sender_info = get_user_info(request.sender_id)
+        if sender_info and sender_info.get("email"):
+            background_tasks.add_task(
+                send_transaction_email,
+                sender_info["email"],
+                request.amount,
+                sender_info["balance"],
+                "transfer"
+            )
+        return {"message": f"Successfully transferred Rs. {request.amount} from user ID {request.sender_id}'s account to {request.receiver_account_number}."}
     else:
-        return {"error": "Transfer failed. Please check your account balance and the receiver's account number and try again."}
+        return {"error": "Transfer failed. Please check your account balance and the receiver's account number."}
 
+# --- TRANSACTIONS HISTORY ---
 @app.get("/transactions/{user_id}")
 def get_transaction_history(user_id: int):
     transactions = get_transactions_history(user_id)
@@ -84,7 +117,8 @@ def get_transaction_history(user_id: int):
         return {"transactions": transactions}
     else:
         return {"error": "No transaction history found for the specified user."}
-    
+
+# --- AUTHENTICATION & PROFILE ---
 class RegisterRequest(BaseModel):
     name: str
     pin: str
