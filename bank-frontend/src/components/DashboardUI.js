@@ -31,7 +31,9 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
   const [transactions, setTransactions] = useState([
     { id: 1, title: 'Seylan Bank - Dividend', date: 'Dec 19, 2023 at 09:33', amount: 12500, type: 'income', icon: '📈' },
     { id: 2, title: 'Dialog Axiata - Bill', date: 'Dec 18, 2023 at 14:20', amount: -2500, type: 'expense', icon: '📱' },
-    { id: 3, title: 'Supermarket', date: 'Dec 15, 2023 at 10:00', amount: -4500, type: 'expense', icon: '🛒' }
+    { id: 3, title: 'Supermarket', date: 'Dec 15, 2023 at 10:00', amount: -4500, type: 'expense', icon: '🛒' },
+    { id: 4, title: 'SLT Mobiltel', date: 'Dec 17, 2023 at 10:00', amount: -4500, type: 'expense', icon: '📞' },
+    { id: 5, title: 'CSE Income', date: 'Dec 18, 2023 at 10:00', amount: +45000, type: 'income', icon: '💲' }
   ]);
 
   // Derived Calculations from synchronized chartData
@@ -157,9 +159,9 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="animate-[slideDown_0.5s_ease-out]">
             <div className="text-gray-500 text-sm font-semibold uppercase tracking-wider">Total balance</div>
-            <div className="text-4xl md:text-5xl font-extrabold tracking-tight text-black mt-1 transition-all duration-500">
+            <div className="text-4xl md:text-5xl font-extrabold tracking-tight text-green-500 mt-1 transition-all duration-500">
               Rs {parseFloat(balance).toLocaleString(undefined, { minimumFractionDigits: 2 })}
-              <span className="ml-4 text-sm bg-black text-white px-3 py-1 rounded-full align-middle">+22%</span>
+              <span className="ml-4 text-sm bg-green-400 text-white px-3 py-1 rounded-full align-middle">+22%</span>
             </div>
           </div>
         </div>
@@ -217,7 +219,7 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
                   <div className="text-xs font-semibold text-black uppercase tracking-wider mb-1">Status</div>
                   <div className="flex items-center gap-2">
                     <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-black opacity-75"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-400"></span>
                     </span>
                     <span className="text-green-500 font-bold text-sm">Active</span>
@@ -227,7 +229,7 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
             </div>
 
             {/* Currency Exchange Widget */}
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100">
+            <div className="bg-white p-6 rounded-4xl shadow-sm border border-gray-100">
               <div className="flex justify-between items-center mb-4">
                 <div>
                   <h3 className="text-xl font-extrabold text-black">Currency Exchange</h3>
@@ -237,7 +239,7 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
                   Rs. 302.50
                 </span>
               </div>
-              <div className="w-full h-[140px] mt-2">
+              <div className="w-full h-35 mt-2">
                 <ResponsiveContainer width={"100%"} height={"100%"}>
                    <LineChart data={exchangeRatesData}>
                     <XAxis dataKey="day" stroke="#9ca3af" tick={{ fontSize: 11, fontWeight: 'bold' }} axisLine={false} tickLine={false} />
@@ -250,7 +252,7 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
             </div> 
 
             {/* Quick Transfer Widget */}
-            <div className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
+            <div className="bg-white p-6 rounded-4xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow duration-300">
               <h3 className="text-xl font-extrabold text-black mb-5">Quick Transfer</h3>
               <form onSubmit={handleTransfer}>
                 <input
@@ -277,9 +279,9 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
             {/* Top Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
-                { label: 'Total Balance', value: balance, color: 'bg-black' },
+                { label: 'Total Balance', value: balance, color: 'bg-green-500' },
                 { label: 'Total Income', value: totalIncome, color: 'bg-gray-400' },
-                { label: 'Total Expense', value: totalExpense, color: 'bg-gray-200' },
+                { label: 'Total Expense', value: totalExpense, color: 'bg-red-500' },
               ].map((stat, idx) => (
                 <div key={idx} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-md transition-all duration-300 hover:-translate-y-1">
                   <div className="flex items-center gap-3 mb-3">
@@ -330,15 +332,15 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
                   <AreaChart data={lineGraphData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#111827" stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor="#111827" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#10B981" stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor="#10B981" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
                     <CartesianGrid stroke="#f3f4f6" strokeDasharray="3 3" vertical={false}/>
                     <XAxis dataKey="name" stroke="#9ca3af" tick={{fontWeight: 'bold', fontSize: 12}} axisLine={false} tickLine={false}/>
                     <YAxis stroke="#9ca3af" tick={{fontWeight: 'bold', fontSize: 12}} axisLine={false} tickLine={false}/>
                     <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#111827', borderRadius: '16px', color: '#fff', fontWeight: 'bold' }} itemStyle={{ color: '#fff' }}/>
-                    <Area type="monotone" dataKey="amount" stroke="#111827" strokeWidth={4} fillOpacity={1} fill="url(#colorAmount)" activeDot={{ r: 8, stroke: '#fff', strokeWidth: 3, fill: '#111827' }}/>
+                    <Area type="monotone" dataKey="amount" stroke="#82ff84" strokeWidth={4} fillOpacity={1} fill="url(#colorAmount)" activeDot={{ r: 8, stroke: '#fff', strokeWidth: 3, fill: '#111827' }}/>
                   </AreaChart>
                 </ResponsiveContainer>
               </div>
@@ -380,7 +382,7 @@ export default function DashboardUI({ name = "Yasho", balance: serverBalance = 0
                           <div className="text-xs font-semibold text-gray-400 mt-0.5">{tx.date}</div>
                         </div>
                       </div>
-                      <div className={`font-extrabold ${tx.type === 'income' ? 'text-black' : 'text-gray-500'}`}>
+                      <div className={`font-extrabold ${tx.type === 'income' ? 'text-green-500' : 'text-red-500'}`}>
                         {tx.amount > 0 ? '+' : ''} Rs. {Math.abs(tx.amount).toLocaleString()}
                       </div>
                     </div>
