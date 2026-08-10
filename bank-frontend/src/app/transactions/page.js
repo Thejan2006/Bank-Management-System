@@ -69,7 +69,7 @@ export default function TransactionsPage() {
       if (data.error) {
         toast.error(typeof data.error === 'object' ? JSON.stringify(data.error) : data.error);
       } else {
-        toast.success(data.message || 'Transaction successful');
+        toast.success(data.message || 'Transaction successful! Email alert sent');
         setAmount('');
         setTimeout(() => {
           router.push('/dashboard'); 
