@@ -16,9 +16,8 @@ def startup_event():
     create_tables()
 
 origins = [
-    "http://localhost:3000",
-    "https://bank-frontend-c1d30anha-dumidu-thejan-s-projects.vercel.app",
-    "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app"
+    "https://bank-frontend-orcin.vercel.app/",
+    "http://localhost:3000"
 ]
 
 app.add_middleware(
