@@ -8,6 +8,13 @@ from user_management import get_user_info, create_user, login_user, create_accou
 from notifications import send_transaction_email
 
 app = FastAPI()
+
+from database import create_tables
+
+@app.on_event("startup")
+def startup_event():
+    create_tables()
+
 origins = [
     "http://localhost:3000",  # Local testing සඳහා
     "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app",  # Vercel Frontend URL 
