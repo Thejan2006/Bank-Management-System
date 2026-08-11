@@ -18,8 +18,8 @@ export default function LoginPage() {
     toast.dismiss();
 
     const endpoint = isLogin 
-      ? 'http://localhost:8000/login' 
-      : 'http://localhost:8000/register';
+      ? 'bank-management-system-production-ee76.up.railway.app/login' 
+      : 'bank-management-system-production-ee76.up.railway.app/register';
     
     const payload = isLogin 
       ? { username, password } 

@@ -34,7 +34,7 @@ export default function TransactionsPage() {
       return;
     }
 
-    const endpoint = type === 'deposit' ? 'http://localhost:8000/deposit' : 'http://localhost:8000/withdraw';
+    const endpoint = type === 'deposit' ? 'bank-management-system-production-ee76.up.railway.app/deposit' : 'bank-management-system-production-ee76.up.railway.app/withdraw';
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;

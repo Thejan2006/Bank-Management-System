@@ -24,10 +24,10 @@ export default function DashboardPage() {
 
     const fetchDashboardData = async () => {
       try {
-        const userRes = await fetch(`http://localhost:8000/user/${userId}`);
+        const userRes = await fetch(`bank-management-system-production-ee76.up.railway.app/user/${userId}`);
         const userData = await userRes.json();
         
-        const txRes = await fetch(`http://localhost:8000/transactions/${userId}`);
+        const txRes = await fetch(`bank-management-system-production-ee76.up.railway.app/transactions/${userId}`);
         const txData = await txRes.json();
         
         let txArray = [];

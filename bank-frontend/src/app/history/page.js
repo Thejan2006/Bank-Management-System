@@ -22,7 +22,7 @@ export default function HistoryPage() {
     setUserId(storedUserId);
 
     // Fetch transaction history from backend
-    fetch(`http://localhost:8000/transactions/${storedUserId}`)
+    fetch(`bank-management-system-production-ee76.up.railway.app/transactions/${storedUserId}`)
       .then((res) => res.json())
       .then((data) => {
         let txList = [];

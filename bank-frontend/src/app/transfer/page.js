@@ -40,7 +40,7 @@ export default function TransferPage() {
     }
 
     try {
-      const response = await fetch('http://localhost:8000/transfer', {
+      const response = await fetch('bank-management-system-production-ee76.up.railway.app/transfer', {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({
