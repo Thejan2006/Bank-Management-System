@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "buildCommand": "cd bank-frontend && npm install && npm run build",
+  "outputDirectory": "bank-frontend/.next",
+  "framework": "nextjs"
+}
