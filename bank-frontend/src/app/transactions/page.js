@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function TransactionsPage() {
   const [userId, setUserId] = useState('');
@@ -34,7 +35,10 @@ export default function TransactionsPage() {
       return;
     }
 
-    const endpoint = type === 'deposit' ? 'bank-management-system-production-ee76.up.railway.app/deposit' : 'bank-management-system-production-ee76.up.railway.app/withdraw';
+    const endpoint =
+      type === 'deposit'
+        ? `${API_BASE_URL}/deposit`
+        : `${API_BASE_URL}/withdraw`;
     const headers = { 'Content-Type': 'application/json' };
     if (token) {
       headers['Authorization'] = `Bearer ${token}`;

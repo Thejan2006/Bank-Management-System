@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 // improt the DashboardUI component
 import DashboardUI from '../../components/DashboardUI'; 
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -24,10 +25,10 @@ export default function DashboardPage() {
 
     const fetchDashboardData = async () => {
       try {
-        const userRes = await fetch(`bank-management-system-production-ee76.up.railway.app/user/${userId}`);
+        const userRes = await fetch(`${API_BASE_URL}/user/${userId}`);
         const userData = await userRes.json();
         
-        const txRes = await fetch(`bank-management-system-production-ee76.up.railway.app/transactions/${userId}`);
+        const txRes = await fetch(`${API_BASE_URL}/transactions/${userId}`);
         const txData = await txRes.json();
         
         let txArray = [];

@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function TransferPage() {
   const [senderId, setSenderId] = useState('');
@@ -40,7 +41,7 @@ export default function TransferPage() {
     }
 
     try {
-      const response = await fetch('bank-management-system-production-ee76.up.railway.app/transfer', {
+      const response = await fetch(`${API_BASE_URL}/transfer`, {
         method: 'POST',
         headers: headers,
         body: JSON.stringify({

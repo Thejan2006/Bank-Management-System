@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { API_BASE_URL } from '../../../lib/api';
 
 // අර අපි අලුතෙන් හදපු UI Component එක මෙතනින් Import කරගන්නවා
 import LoginUI from '../../components/LoginUI'; 
@@ -17,9 +18,9 @@ export default function LoginPage() {
     e.preventDefault();
     toast.dismiss();
 
-    const endpoint = isLogin 
-      ? 'bank-management-system-production-ee76.up.railway.app/login' 
-      : 'bank-management-system-production-ee76.up.railway.app/register';
+    const endpoint = isLogin
+      ? `${API_BASE_URL}/login`
+      : `${API_BASE_URL}/register`;
     
     const payload = isLogin 
       ? { username, password } 

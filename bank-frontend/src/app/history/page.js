@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function HistoryPage() {
   const router = useRouter();
@@ -22,7 +23,7 @@ export default function HistoryPage() {
     setUserId(storedUserId);
 
     // Fetch transaction history from backend
-    fetch(`bank-management-system-production-ee76.up.railway.app/transactions/${storedUserId}`)
+    fetch(`${API_BASE_URL}/transactions/${storedUserId}`)
       .then((res) => res.json())
       .then((data) => {
         let txList = [];

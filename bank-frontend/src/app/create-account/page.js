@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { API_BASE_URL } from '../../../lib/api';
 
 export default function CreateAccountPage() {
   const [userId, setUserId] = useState('');
@@ -15,7 +16,7 @@ export default function CreateAccountPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/create_account', {
+      const response = await fetch(`${API_BASE_URL}/create_account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
