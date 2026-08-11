@@ -16,12 +16,14 @@ def startup_event():
     create_tables()
 
 origins = [
-    "http://localhost:3000",  # Local testing සඳහා
-    "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app",  # Vercel Frontend URL 
+    "http://localhost:3000",
+    "https://bank-frontend-orcin.vercel.app",
+    "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app"
 ]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -30,7 +32,6 @@ app.add_middleware(
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Bank Management System API!"}
-
 @app.get("/status")
 def check_status():
     return {"status": "API is running smoothly."}
