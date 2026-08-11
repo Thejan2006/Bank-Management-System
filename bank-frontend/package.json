@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "jspdf": "^2.5.1",
+    "jspdf-autotable": "^3.8.2",
     "next": "^14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.4.1",
     "react-icons": "^5.7.0",
     "recharts": "^3.10.1"
   }
