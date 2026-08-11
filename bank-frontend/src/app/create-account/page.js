@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
-import { API_BASE_URL } from '../../../lib/api';
+import { API_BASE_URL } from '../../lib/api';
 
 export default function CreateAccountPage() {
   const [userId, setUserId] = useState('');

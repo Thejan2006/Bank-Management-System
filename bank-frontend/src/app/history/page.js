@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-import { API_BASE_URL } from '../../../lib/api';
+import { API_BASE_URL } from '../../lib/api';
 
 export default function HistoryPage() {
   const router = useRouter();

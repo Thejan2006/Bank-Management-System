@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 // improt the DashboardUI component
 import DashboardUI from '../../components/DashboardUI'; 
-import { API_BASE_URL } from '../../../lib/api';
+import { API_BASE_URL } from '../../lib/api';
 
 export default function DashboardPage() {
   const router = useRouter();
