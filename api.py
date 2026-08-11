@@ -3,12 +3,15 @@ from pydantic import BaseModel
 from bank_operations import get_balance, deposit_money, withdraw_money, transfer_money, get_transactions_history
 from fastapi.middleware.cors import CORSMiddleware
 
-# User management සහ Notifications ශ්‍රිත ලබාගැනීම
+# User management & Notifications 
 from user_management import get_user_info, create_user, login_user, create_account, update_user_profile
 from notifications import send_transaction_email
 
 app = FastAPI()
-
+origins = [
+    "http://localhost:3000",  # Local testing සඳහා
+    "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app",  # Vercel Frontend URL 
+]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
