@@ -17,7 +17,7 @@ def startup_event():
 
 origins = [
     "http://localhost:3000",
-    "https://bank-frontend-orcin.vercel.app",
+    "https://bank-frontend-c1d30anha-dumidu-thejan-s-projects.vercel.app",
     "https://bank-management-system-48jazdd1e-dumidu-thejan-s-projects.vercel.app"
 ]
 
