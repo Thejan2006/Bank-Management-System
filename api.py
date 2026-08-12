@@ -16,7 +16,7 @@ def startup_event():
     create_tables()
 
 origins = [
-    "https://bank-frontend-orcin.vercel.app/",
+    "https://bank-frontend-orcin.vercel.app",
     "http://localhost:3000"
 ]
 
